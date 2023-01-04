@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install: 
+    commands:
+      - pip install --upgrade pip
+      - pip install --upgrade awscli
+  build:
+    commands:
+      - echo "Calling cloudfront create-invalidation"
+      - aws cloudfront create-invalidation --distribution-id $cfdistid --paths "/*"
+      - echo "Clear cache on cloudfront"
+      - echo "Job completed successfully! Wait for CloudFront Cache to be cleared"
+      - aws s3 sync ./build $S3_BUCKET 
+      
+
+
+
+ 
