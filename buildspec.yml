@@ -7,4 +7,4 @@ phases:
       - pip install awscliv2
   build:
     commands:
-      - aws s3 sync ./build arn:aws:s3:::bloompage
+      - aws s3 sync arn:aws:s3:::bloompage
