@@ -2,10 +2,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Pipeline using CodePipeline and CodeBuild for continuous delivery of a single-page application to S3
 Parameters:
-  SiteBucketName:
-    Type: String
-    Description: Name of bucket to create to host the website
-    Default: "bloomcfn"
   GitHubUser:
     Type: String
     Description: GitHub User
@@ -69,23 +65,26 @@ Resources:
   CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - codebuild.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Path: "/"
+      Path: /
+      AssumeRolePolicyDocument: |
+        {
+            "Statement": [{
+                "Effect": "Allow",
+                "Principal": { "Service": [ "codebuild.amazonaws.com" ]},
+                "Action": [ "sts:AssumeRole" ]
+            }]
+        }
       Policies:
-      - PolicyName: codebuild-service
-        PolicyDocument:
-          Statement:
-          - Effect: Allow
-            Action: "*"
-            Resource: "*"
-          Version: '2012-10-17'
+        - PolicyName: root
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Resource: !Sub arn:aws:s3:::${SiteBucket}/*
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:GetObjectVersion
   CodePipelineRole:
     Type: AWS::IAM::Role
     Properties:
