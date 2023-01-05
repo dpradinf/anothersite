@@ -75,10 +75,21 @@ Resources:
             }]
         }
       Policies:
-        - PolicyName: root
+        - PolicyName: codebuild-s3-static-website
           PolicyDocument:
             Version: 2012-10-17
             Statement:
+              - Resource: "*"
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - ecr:GetAuthorizationToken
+                  - cloudformation:Describe*
+                  - elasticloadbalancing:Describe*
+                  - codepipeline:Get*
+                  - codebuild:BatchGetBuilds
               - Resource: !Sub arn:aws:s3:::${SiteBucket}/*
                 Effect: Allow
                 Action:
